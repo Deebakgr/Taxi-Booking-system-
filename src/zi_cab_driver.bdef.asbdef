@@ -1,0 +1,36 @@
+managed implementation in class zbp_i_cab_driver unique;
+strict ( 2 );
+with draft; // <--- ADDED
+
+define behavior for ZI_CAB_DRIVER alias Driver
+persistent table zcab_driver
+draft table zcab_driver_d // <--- ADDED (Use Ctrl+1 to generate)
+lock master
+total etag DriverId // Assuming no timestamp field, using key as etag for now
+authorization master ( instance )
+{
+  create;
+  update;
+  delete;
+
+  field ( mandatory : create ) DriverId;
+  field ( readonly : update ) DriverId;
+
+  // Draft Actions - ADDED
+  draft action Edit;
+  draft action Activate;
+  draft action Discard;
+  draft action Resume;
+  draft determine action Prepare;
+
+  mapping for zcab_driver
+  {
+    DriverId           = driver_id;
+
+    /* --- THE FIX: Swapped left and right sides --- */
+    DriverName         = driver_name;
+    PhoneNumber        = phone_number;
+    VehicleNumber      = vehicle_number;
+    AvailabilityStatus = availability_status;
+  }
+}

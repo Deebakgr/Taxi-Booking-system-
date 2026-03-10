@@ -1,0 +1,115 @@
+
+@Metadata.layer: #CORE
+@UI.headerInfo: {
+  typeName:       'Booking',
+  typeNamePlural: 'Taxi Bookings',
+  title:          { type: #STANDARD, value: 'BookingNo' },
+  description:    { type: #STANDARD, value: 'CustomerName' }
+}
+
+@UI.createHidden: false
+
+annotate view ZC_CAB_BOOKING with
+{
+  @UI.facet: [
+    {
+      id:       'BookingDetails',
+      type:     #IDENTIFICATION_REFERENCE,
+      label:    'Booking Details',
+      position: 10
+    },
+    {
+      id:              'TripInfo',
+      type:            #FIELDGROUP_REFERENCE,
+      targetQualifier: 'TripInfo',
+      label:           'Trip Info',
+      position:        20
+    }
+  ]
+
+  /* Hide the internal UUID from the user interface */
+  @UI.hidden: true
+  BookingUuid;
+  
+ 
+
+  -- ──────────────────────────────────────
+  -- LIST PAGE COLUMNS + ACTIONS (Toolbar)
+  -- ──────────────────────────────────────
+
+  @UI.lineItem: [
+    { position: 10, label: 'Booking No.' },
+    { type: #FOR_ACTION, dataAction: 'AssignDriver', label: 'Assign Driver', position: 10 },
+    { type: #FOR_ACTION, dataAction: 'StartTrip',    label: 'Start Trip',    position: 20 },
+    { type: #FOR_ACTION, dataAction: 'CompleteTrip', label: 'Complete Trip', position: 30 }
+  ]
+  /* Added actions here so they also appear on the Object Page header */
+  @UI.identification: [
+    { position: 10, label: 'Booking No.' },
+    { type: #FOR_ACTION, dataAction: 'AssignDriver', label: 'Assign Driver', position: 10 },
+    { type: #FOR_ACTION, dataAction: 'StartTrip',    label: 'Start Trip',    position: 20 },
+    { type: #FOR_ACTION, dataAction: 'CompleteTrip', label: 'Complete Trip', position: 30 }
+  ]
+  @UI.selectionField: [{ position: 10 }]
+  BookingNo;
+
+  @UI.lineItem:       [{ position: 20, label: 'Customer Name' }]
+  @UI.identification: [{ position: 20, label: 'Customer Name' }]
+  @UI.selectionField: [{ position: 20 }]
+  CustomerName;
+
+  @UI.lineItem:       [{ position: 30, label: 'Pickup Location' }]
+  @UI.identification: [{ position: 30, label: 'Pickup Location' }]
+  @UI.selectionField: [{ position: 30 }]
+  PickupLocation;
+
+  @UI.lineItem:       [{ position: 40, label: 'Drop Location' }]
+  @UI.identification: [{ position: 40, label: 'Drop Location' }]
+  DropLocation;
+
+  @UI.lineItem:       [{ position: 50, label: 'Booking Date' }]
+  @UI.identification: [{ position: 50, label: 'Booking Date' }]
+  BookingDate;
+
+  @UI.lineItem:[{ position: 80, 
+                  criticality: 'StatusCriticality', 
+                  criticalityRepresentation: #WITH_ICON }]
+                  
+  @UI.identification:[{ position: 80, 
+                        criticality: 'StatusCriticality', 
+                        criticalityRepresentation: #WITH_ICON }]
+  Status;
+
+  -- ──────────────────────────────────────
+  -- OBJECT PAGE — Booking Details Facet
+  -- ──────────────────────────────────────
+
+  @UI.identification: [{ position: 70, label: 'Currency' }]
+  CurrencyCode;
+
+  @UI.identification: [{ position: 80, label: 'Created By' }]
+  CreatedBy;
+
+  @UI.identification: [{ position: 90, label: 'Created At' }]
+  CreatedAt;
+
+  @UI.identification: [{ position: 100, label: 'Last Changed By' }]
+  LastChangedBy;
+
+  @UI.identification: [{ position: 110, label: 'Last Changed At' }]
+  LastChangedAt;
+
+  -- ──────────────────────────────────────
+  -- OBJECT PAGE — Trip Info Facet
+  -- ──────────────────────────────────────
+
+  @UI.fieldGroup: [{ qualifier: 'TripInfo', position: 10, label: 'Driver ID' }]
+  DriverId;
+
+  @UI.fieldGroup: [{ qualifier: 'TripInfo', position: 20, label: 'Vehicle Number' }]
+  VehicleNumber;
+
+  @UI.lineItem:   [{ position: 70, label: 'Fare Amount' }]
+  @UI.fieldGroup: [{ qualifier: 'TripInfo', position: 30, label: 'Fare Amount' }]
+  FareAmount;
+}

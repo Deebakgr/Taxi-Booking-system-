@@ -1,0 +1,62 @@
+
+managed implementation in class zbp_i_cab_booking unique;
+strict ( 1 );
+with draft;
+
+define behavior for ZI_CAB_BOOKING alias Booking
+persistent table zcab_booking
+draft table zcab_booking_d
+etag master LocalLastChanged
+lock master total etag LastChangedAt
+authorization master ( global, instance )
+{
+  /* --- THE FIX IS HERE --- */
+  /* Tell RAP to auto-generate the UUID when "Create" is clicked */
+  field ( readonly, numbering : managed ) BookingUuid;
+
+  field ( readonly ) BookingNo, CreatedBy, CreatedAt,
+                     LastChangedBy, LastChangedAt, LocalLastChanged;
+  field ( readonly ) Status;
+  field ( mandatory ) CustomerName, PickupLocation, DropLocation,
+                      BookingDate, CurrencyCode;
+
+  create;
+  update;
+  delete;
+
+  action AssignDriver result [1] $self;
+  action StartTrip    result [1] $self;
+  action CompleteTrip result [1] $self;
+
+  draft action Edit;
+  draft action Activate optimized;
+  draft action Discard;
+  draft action Resume;
+  draft determine action Prepare;
+
+  determination generateBookingNo on modify { create; }
+  determination setInitialStatus  on modify { create; }
+  determination fetchDriverDetails on modify { field DriverId; }
+
+  validation validateMandatory on save { create; update; }
+
+  mapping for zcab_booking
+  {
+    BookingUuid      = booking_uuid;
+    BookingNo        = booking_no;
+    CustomerName     = customer_name;
+    PickupLocation   = pickup_location;
+    DropLocation     = drop_location;
+    DriverId         = driver_id;
+    VehicleNumber    = vehicle_number;
+    Status           = status;
+    BookingDate      = booking_date;
+    FareAmount       = fare_amount;
+    CurrencyCode     = currency_code;
+    CreatedBy        = created_by;
+    CreatedAt        = created_at;
+    LastChangedBy    = last_changed_by;
+    LastChangedAt    = last_changed_at;
+    LocalLastChanged = local_last_changed;
+  }
+}
